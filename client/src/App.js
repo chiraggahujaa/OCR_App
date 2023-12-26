@@ -1,103 +1,95 @@
 import React, { useState } from "react";
-import { uploadImage, processImage } from "./api";
-import EditForm from "./Components/EditForm";
-import axios from "axios";
-import FilterData from "./Components/FilterData";
+import FilterData from "./Components/Filter/FilterData";
+import {
+  Box,
+  ChakraProvider,
+  extendTheme,
+  Tabs,
+  TabList,
+  TabPanels,
+  TabPanel,
+  Tab,
+  Heading
+} from "@chakra-ui/react";
+import OCRResult from "./Components/OCR/OCRResult";
+import OCRImage from "./Components/OCR/OCRImage";
 
 function App() {
   const [image, setImage] = useState(null);
   const [ocrResult, setOcrResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isEditMode, setEditMode] = useState(false);
 
-  const handleUpload = (e) =>
-    uploadImage(e, setImage, setOcrResult, setErrorMessage);
-  const handleProcess = () =>
-    processImage(image, setOcrResult, setErrorMessage);
-  const handleEditForm = () => {
-    if (!ocrResult) setErrorMessage("No ID Extracted Yet!");
-    else setEditMode(true);
-  };
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // Assuming you have the updatedData object with the edited properties
-      const updatedData = {
-        firstName: e.target.firstName.value,
-        lastName: e.target.lastName.value,
-        dob: new Date(e.target.dob.value),
-        doi: new Date(e.target.doi.value),
-        doe: new Date(e.target.doe.value),
-      };
-
-      // Make the PUT request to update the data
-      const response = await axios.put(
-        `http://localhost:5000/api/idCard/${ocrResult.identificationNo}`,
-        updatedData
-      );
-
-      console.log("Edit successful:", response.data);
-    } catch (error) {
-      // Handle errors if the PUT request fails
-      setErrorMessage("Error updating data!");
-      console.error("Error updating data:", error);
-    }
-    setEditMode(false);
-  };
+  const customTheme = extendTheme({
+    styles: {
+      global: {
+        body: {
+          bg: "gray.800", // Set your dark background color here
+          backgroundImage: `url(${"./images/main-image.jpeg"})`, // Set your background image here
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        },
+      },
+    },
+  });
 
   return (
-    <div className="app-container">
-      <h1>Thai ID Card OCR</h1>
-      <input
-        type="file"
-        accept="image/jpeg, image/png"
-        onChange={handleUpload}
-      />
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {image && (
-        <img
-          src={URL.createObjectURL(image)}
-          alt="Uploaded"
-          style={{ maxWidth: "300px" }}
-        />
-      )}
-      <button onClick={handleProcess}>Process Image</button>
-      <button onClick={handleEditForm}>Edit Details</button>
-      {isEditMode && <EditForm data={ocrResult} onSubmit={handleEditSubmit} />}
-
-      {ocrResult && (
-        <div className="ocr-result">
-          <h2>Extracted Data</h2>
-          <ul>
-            <li>
-              Identification Number: {ocrResult.identificationNo || "N/A"}
-            </li>
-            <li>First Name: {ocrResult.firstName || "N/A"}</li>
-            <li>last Name: {ocrResult.lastName || "N/A"}</li>
-            <li>
-              Date of Birth:{" "}
-              {ocrResult.dateOfBirth
-                ? ocrResult.dateOfBirth.toLocaleDateString()
-                : "N/A"}
-            </li>
-            <li>
-              Expiry Date:{" "}
-              {ocrResult.dateOfBirth
-                ? ocrResult.expiryDate.toLocaleDateString()
-                : "N/A"}
-            </li>
-            <li>
-              Date of Issue:{" "}
-              {ocrResult.issueDate
-                ? ocrResult.dateOfBirth.toLocaleDateString()
-                : "N/A"}
-            </li>
-          </ul>
-        </div>
-      )}
-      <FilterData />
-    </div>
+    <ChakraProvider theme={customTheme}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        p={20}
+        bgImage={"./images/main-image.jpeg"}
+        bgSize="cover"
+        bgPosition="center"
+        bgRepeat="no-repeat"
+      >
+        <Box
+          className="app-container"
+          // minHeight="100vh"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          w="600px"
+          bg="white" // Set your box background color here
+          p={8}
+          borderRadius="md"
+          boxShadow="md"
+        >
+          <Heading mb={4}>Thai ID Card OCR</Heading>
+          <Tabs isFitted variant="enclosed">
+            <TabList mb="1em">
+              <Tab>Extract Data</Tab>
+              <Tab>Filter Data</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <OCRImage
+                  image={image}
+                  ocrResult={ocrResult}
+                  setImage={setImage}
+                  setOcrResult={setOcrResult}
+                  setErrorMessage={setErrorMessage}
+                />
+                <OCRResult ocrResult={ocrResult} />
+              </TabPanel>
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <FilterData />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+      </Box>
+    </ChakraProvider>
   );
 }
 

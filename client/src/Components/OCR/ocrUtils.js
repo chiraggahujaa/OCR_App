@@ -1,5 +1,3 @@
-// import axios from "axios";
-
 export const extractThaiIDCardData = (fullText) => {
     const lines = fullText.split('\n');
     

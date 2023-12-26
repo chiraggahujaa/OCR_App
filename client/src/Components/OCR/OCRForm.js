@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {
+  Box,
+  Heading,
+  Button,
+  Input,
+  FormControl,
+  FormLabel,
+} from "@chakra-ui/react";
 
 function OCRForm({ onUpload }) {
   const [image, setImage] = useState(null);
@@ -26,15 +34,20 @@ function OCRForm({ onUpload }) {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Upload Thai ID Card Image</h2>
+    <Box className="container" mt={5}>
+      <Heading as="h2" mb={4}>
+        Upload Thai ID Card Image
+      </Heading>
       <form onSubmit={handleSubmit} className="mt-4">
-        <div className="mb-3">
-          <input type="file" className="form-control" onChange={handleChange} />
-        </div>
-        <button type="submit" className="btn btn-primary">Upload</button>
+        <FormControl mb={3}>
+          <FormLabel>Choose Image</FormLabel>
+          <Input type="file" className="form-control" onChange={handleChange} />
+        </FormControl>
+        <Button type="submit" colorScheme="blue">
+          Upload
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 }
 

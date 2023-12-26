@@ -1,7 +1,12 @@
 import axios from "axios";
-import { extractThaiIDCardData } from "./ocrUtils";
-export const uploadImage = (e, setImage, setOcrResult, setErrorMessage) => {
-  const selectedFile = e.target.files[0];
+import { extractThaiIDCardData } from "../Components/OCR/ocrUtils";
+
+export const uploadImage = (
+  selectedFile,
+  setImage,
+  setOcrResult,
+  setErrorMessage
+) => {
   if (!selectedFile) return;
 
   setImage(selectedFile);
@@ -9,9 +14,22 @@ export const uploadImage = (e, setImage, setOcrResult, setErrorMessage) => {
   setErrorMessage("");
 };
 
-export const processImage = async (image, setOcrResult, setErrorMessage) => {
+export const processImage = async (
+  image,
+  setOcrResult,
+  setIsLoading,
+  toast
+) => {
+  setIsLoading(true);
   if (!image) {
-    setErrorMessage("Please upload an image first.");
+    toast({
+      title: "Upload Image",
+      description: "Please Upload Image First!",
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+    });
+    setIsLoading(false);
     return;
   }
 
@@ -45,12 +63,19 @@ export const processImage = async (image, setOcrResult, setErrorMessage) => {
       );
       console.log(resp);
     }
-
+    
     setOcrResult(extractedData);
-    setErrorMessage("");
   } catch (error) {
-    console.error(error);
-    setErrorMessage("Error processing image.");
+    toast({
+      title: "Image Error",
+      description: "Error processing image!",
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+    });
+  }
+  finally{
+    setIsLoading(false);
   }
 };
 
