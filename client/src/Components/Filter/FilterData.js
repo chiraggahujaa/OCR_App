@@ -23,22 +23,11 @@ const FilterData = () => {
   const handleDateFilter = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/idCard/date/${selectedDate}`
+        `https://ocrappbackend.onrender.com/api/idCard/date/${selectedDate}`
       );
       setFilteredData(response.data);
     } catch (error) {
       console.error("Error fetching data by date:", error);
-    }
-  };
-
-  const handleStatusFilter = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/idCard/status/${selectedStatus}`
-      );
-      setFilteredData(response.data);
-    } catch (error) {
-      console.error("Error fetching data by status:", error);
     }
   };
 

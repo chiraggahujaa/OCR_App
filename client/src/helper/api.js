@@ -53,12 +53,12 @@ export const processImage = async (
     console.log(extractedData);
 
     const identificationNoExists = await axios.get(
-      `http://localhost:5000/api/idCard/${extractedData.identificationNo}`
+      `https://ocrappbackend.onrender.com/api/idCard/${extractedData.identificationNo}`
     );
 
     if (!identificationNoExists.data) {
       const resp = await axios.post(
-        "http://localhost:5000/api/idCard",
+        "https://ocrappbackend.onrender.com/api/idCard",
         extractedData
       );
       console.log(resp);

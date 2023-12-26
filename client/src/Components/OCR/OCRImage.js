@@ -33,7 +33,7 @@ const OCRImage = (props) => {
     try {
       // Make the PUT request to update the data
       const response = await axios.put(
-        `http://localhost:5000/api/idCard/${ocrResult.identificationNo}`,
+        `https://ocrappbackend.onrender.com/api/idCard/${ocrResult.identificationNo}`,
         { identificationNo: ocrResult.identificationNo, ...updatedData }
       );
 
